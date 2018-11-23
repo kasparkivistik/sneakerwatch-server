@@ -1,0 +1,56 @@
+{
+  "type":"sneaker",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "top": {
+      "type": "string"
+    },
+    "inspired": {
+      "type": "string"
+    },
+    "collection": {
+      "type": "string"
+    },
+    "price": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "brand": {
+      "type": "string"
+    },
+    "history": {
+      "type": "string"
+    },
+    "feature": {
+      "type": "string"
+    },
+    "style": {
+      "type": "string"
+    },
+    "additional": {
+      "type": "string"
+    },
+    "imageUrl": {
+      "type": "string"
+    },
+    "score": {
+      "type": "integer"
+    },
+    "good": {
+      "type": "array",
+      "items" : {
+        "type" : "string"
+      }
+    },
+    "bad": {
+      "type": "array",
+      "items" : {
+        "type" : "string"
+      }
+    }
+  }
+}

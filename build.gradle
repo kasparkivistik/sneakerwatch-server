@@ -1,0 +1,51 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'ee.noukogu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "https://artifacts.elastic.co/maven"
+    }
+}
+
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-data-elasticsearch') {
+        exclude module: 'org.elasticsearch.client:transport:6.4.2'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-data-rest')
+    implementation('org.springframework.boot:spring-boot-starter-mail')
+    // implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation('org.springframework.boot:spring-boot-starter-validation')
+    implementation('io.springfox:springfox-swagger2:2.9.2')
+    implementation('io.springfox:springfox-swagger-ui:2.9.2')
+    implementation('org.springframework.session:spring-session-core')
+    implementation('org.elasticsearch.client:transport:6.5.0')
+    // implementation('org.elasticsearch.client:x-pack-transport:6.5.1')
+    runtimeOnly('org.springframework.boot:spring-boot-devtools')
+    compileOnly('org.projectlombok:lombok')
+    compileOnly('com.auth0:auth0-spring-security-api:1.1.0')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc')
+    testImplementation('org.springframework.security:spring-security-test')
+}
