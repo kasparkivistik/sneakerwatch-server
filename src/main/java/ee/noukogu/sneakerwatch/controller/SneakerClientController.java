@@ -1,13 +1,18 @@
 package ee.noukogu.sneakerwatch.controller;
 
 import ee.noukogu.sneakerwatch.model.Sneaker;
+import ee.noukogu.sneakerwatch.model.SneakerSearchParams;
 import ee.noukogu.sneakerwatch.model.SneakerSearchQuery;
 import ee.noukogu.sneakerwatch.service.SneakerService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @RequestMapping("/client")
@@ -16,19 +21,22 @@ public class SneakerClientController {
     @Resource
     SneakerService sneakerService;
 
-    @PostMapping("/sneaker/add")
-    public ResponseEntity<?> add(@RequestBody Sneaker sneaker) {
-        if (sneaker != null) {
-            return new ResponseEntity<>(sneakerService.add(sneaker), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("My N-word, you didnt add a FUCKING SNEAKER", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @GetMapping("/sneaker/getAll")
     public @ResponseBody
-    ResponseEntity<?> getAll() {
-        return new ResponseEntity<>(sneakerService.getAll(), HttpStatus.OK);
+    Page<Sneaker> getAll(Pageable pageable) {
+        return sneakerService.getAll(pageable);
+    }
+
+    @GetMapping("/sneaker/searchAShoe")
+    public @ResponseBody
+    List<Sneaker> searchAShoe(@NotNull SneakerSearchParams params, Pageable pageable) {
+        return sneakerService.getAllBySearchParams(params, pageable);
+    }
+
+    @GetMapping("/sneaker/chooseAShoe")
+    public @ResponseBody
+    List<Sneaker> chooseAShoe(@NotNull SneakerSearchParams params, Pageable pageable) {
+        return sneakerService.getAllBySearchParams(params, pageable);
     }
 
     @GetMapping("/sneaker/getBrands")

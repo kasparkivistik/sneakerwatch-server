@@ -45,6 +45,8 @@ dependencies {
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     compileOnly('org.projectlombok:lombok')
     compileOnly('com.auth0:auth0-spring-security-api:1.1.0')
+    compile('org.apache.commons:commons-lang3:3.6')
+    compile('org.apache.commons:commons-text:1.1')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc')
     testImplementation('org.springframework.security:spring-security-test')

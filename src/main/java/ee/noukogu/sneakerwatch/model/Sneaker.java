@@ -17,7 +17,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "sneaker")
+@Document(indexName = "sneaker", type = "sneaker")
 public class Sneaker {
 
     @JsonProperty("name")
