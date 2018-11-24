@@ -6,6 +6,7 @@ import ee.noukogu.sneakerwatch.model.PageableImpl;
 import ee.noukogu.sneakerwatch.model.Sneaker;
 import ee.noukogu.sneakerwatch.model.SneakerSearchQuery;
 import ee.noukogu.sneakerwatch.repository.SneakerRepository;
+import ee.noukogu.sneakerwatch.repository.SneakerSearchQueryRepository;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
@@ -34,6 +35,8 @@ public class SneakerService {
     private ElasticsearchTemplate elasticsearchTemplate;
     @Resource
     private FilterService filterService;
+    @Resource
+    private SneakerSearchQueryRepository sneakerSearchQueryRepository;
 
     public Sneaker add(Sneaker sneaker) {
         return repository.save(sneaker);
@@ -53,15 +56,16 @@ public class SneakerService {
 
     public List<Sneaker> chooseWithQuery(SneakerSearchQuery sneakerSearchQuery) {
 
-        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
+        //TODO: save with user id
+        sneakerSearchQueryRepository.save(sneakerSearchQuery);
 
+        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
         Sort sort = Sort.by(Sort.Direction.DESC, "score");
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withIndices("sneaker")
                 .withPageable(PageableImpl.builder().pageSize(300).pageNumber(0).offset(0).sort(sort).build())
                 .build();
-
         return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class).stream().limit(4).collect(toList());
     }
 
