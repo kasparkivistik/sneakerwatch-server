@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class SneakerController {
+@RequestMapping("/admin")
+public class SneakerAdminController {
 
     @Resource
     SneakerService sneakerService;
@@ -29,25 +30,6 @@ public class SneakerController {
         } else {
             return new ResponseEntity<>("My N-word, you didnt add a FUCKING SNEAKER", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @GetMapping("/sneaker/getAll")
-    public @ResponseBody
-    ResponseEntity<?> getAll() {
-        return new ResponseEntity<>(sneakerService.getAll(), HttpStatus.OK);
-    }
-
-    @GetMapping("/sneaker/getBrands")
-    public @ResponseBody
-    ResponseEntity<?> getBrands() {
-        return new ResponseEntity<>(sneakerService.getBrands(), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/sneaker/deleteAll")
-    public @ResponseBody
-    ResponseEntity<?> deleteAll() {
-        sneakerService.deleteAll();
-        return new ResponseEntity<>("DELETED ALL SNEAKERS", HttpStatus.OK);
     }
 
     @PostMapping("sneaker/getFromJson")
@@ -63,4 +45,12 @@ public class SneakerController {
         sneakers.forEach(sneaker -> sneakerService.add(sneaker));
         return new ResponseEntity<>("Shoes added successfully", HttpStatus.OK);
     }
+
+    @DeleteMapping("/sneaker/deleteAll")
+    public @ResponseBody
+    ResponseEntity<?> deleteAll() {
+        sneakerService.deleteAll();
+        return new ResponseEntity<>("DELETED ALL SNEAKERS", HttpStatus.OK);
+    }
+
 }
