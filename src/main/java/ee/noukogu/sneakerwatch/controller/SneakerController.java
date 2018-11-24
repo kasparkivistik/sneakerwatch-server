@@ -40,4 +40,9 @@ public class SneakerController {
     public Sneaker getSneakerByName(@PathVariable("name") String name) {
         return sneakerService.getByName(name);
     }
+
+    @GetMapping("getById/{id}")
+    public Sneaker getById(@PathVariable("id") long id) {
+        return sneakerService.getById(id);
+    }
 }

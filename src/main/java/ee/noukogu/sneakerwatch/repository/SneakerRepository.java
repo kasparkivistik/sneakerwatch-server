@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SneakerRepository extends ElasticsearchRepository<Sneaker, String> {
 
+    Sneaker findByPointer(long id);
+
     Sneaker findByName(String name);
 }

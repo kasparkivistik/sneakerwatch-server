@@ -56,7 +56,7 @@ public class SneakerService {
 
     public List<Sneaker> chooseWithQuery(SneakerSearchQuery sneakerSearchQuery) {
 
-        //TODO: save with user id
+        //TODO: save with user pointer
         sneakerSearchQueryRepository.save(sneakerSearchQuery);
 
         BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
@@ -102,6 +102,10 @@ public class SneakerService {
                 .must(topQuery)
                 .must(brandQuery);
         return boolQueryBuilder;
+    }
+
+    public Sneaker getById(long id) {
+        return repository.findByPointer(id);
     }
 
     public Sneaker getByName(String name) {

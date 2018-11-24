@@ -23,12 +23,13 @@ public class SneakerAdminController {
     @Resource
     SneakerService sneakerService;
 
+
     @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Sneaker sneaker) {
         if (sneaker != null) {
             return new ResponseEntity<>(sneakerService.add(sneaker), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("My N-word, you didnt add a FUCKING SNEAKER", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("You didn't add a sneaker", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -41,8 +42,11 @@ public class SneakerAdminController {
         ObjectMapper mapper = new ObjectMapper();
 
         List<Sneaker> sneakers = mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, Sneaker.class));
-
-        sneakers.forEach(sneaker -> sneakerService.add(sneaker));
+        long pointer = 0L;
+        for (Sneaker sneaker : sneakers) {
+            sneaker.setPointer(pointer++);
+            sneakerService.add(sneaker);
+        }
         return new ResponseEntity<>("Shoes added successfully", HttpStatus.OK);
     }
 

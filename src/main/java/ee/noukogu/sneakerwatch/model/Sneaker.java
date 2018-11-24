@@ -20,6 +20,7 @@ import java.util.Map;
 @Document(indexName = "sneaker", type = "sneaker")
 public class Sneaker {
 
+    public long pointer;
     @JsonProperty("name")
     @Id
     public String name;
