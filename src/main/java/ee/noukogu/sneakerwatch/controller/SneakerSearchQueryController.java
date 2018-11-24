@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/api/queries")
+@RequestMapping("/api/public/queries")
 public class SneakerSearchQueryController {
 
     @Resource

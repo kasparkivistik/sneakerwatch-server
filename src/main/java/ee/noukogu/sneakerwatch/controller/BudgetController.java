@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/budget")
+@RequestMapping("/api/public/budget")
 public class BudgetController {
 
     @GetMapping

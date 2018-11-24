@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/api/sneakers")
+@RequestMapping("/api/public/sneakers")
 public class SneakerController {
 
     @Resource

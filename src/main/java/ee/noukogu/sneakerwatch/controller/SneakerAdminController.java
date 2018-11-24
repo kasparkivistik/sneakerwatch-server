@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/admin/sneakers")
+@RequestMapping("/api/public/admin/sneakers")
 public class SneakerAdminController {
 
     @Resource
