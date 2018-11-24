@@ -35,4 +35,9 @@ public class SneakerController {
     ResponseEntity<?> searchSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery, Pageable pageable) {
         return new ResponseEntity<>(sneakerService.searchWithQuery(sneakerSearchQuery, pageable), HttpStatus.OK);
     }
+
+    @GetMapping("getByName/{name}")
+    public Sneaker getSneakerByName(@PathVariable("name") String name) {
+        return sneakerService.getByName(name);
+    }
 }

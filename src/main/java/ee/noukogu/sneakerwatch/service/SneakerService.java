@@ -104,4 +104,7 @@ public class SneakerService {
         return boolQueryBuilder;
     }
 
+    public Sneaker getByName(String name) {
+        return repository.findByName(name);
+    }
 }
