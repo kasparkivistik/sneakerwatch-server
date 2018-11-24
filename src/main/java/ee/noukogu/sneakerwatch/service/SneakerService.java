@@ -1,8 +1,8 @@
 package ee.noukogu.sneakerwatch.service;
 
 import ee.noukogu.enums.Purpose;
-import ee.noukogu.enums.Top;
 import ee.noukogu.sneakerwatch.model.Budget;
+import ee.noukogu.sneakerwatch.model.PageableImpl;
 import ee.noukogu.sneakerwatch.model.Sneaker;
 import ee.noukogu.sneakerwatch.model.SneakerSearchQuery;
 import ee.noukogu.sneakerwatch.repository.SneakerRepository;
@@ -18,8 +18,10 @@ import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
@@ -30,6 +32,8 @@ public class SneakerService {
 
     @Resource
     private ElasticsearchTemplate elasticsearchTemplate;
+    @Resource
+    private FilterService filterService;
 
     public Sneaker add(Sneaker sneaker) {
         return repository.save(sneaker);
@@ -57,7 +61,7 @@ public class SneakerService {
         MatchQueryBuilder topQuery = matchQuery("top", sneakerSearchQuery.getTop().getValue());
         List<String> brands = sneakerSearchQuery.getBrands();
         if (brands == null || brands.isEmpty()) {
-            brands = new ArrayList<>(getBrands());
+            brands = new ArrayList<>(filterService.getBrands());
         }
         MatchQueryBuilder brandQuery = matchQuery("brand", brands).operator(Operator.OR);
 
@@ -69,53 +73,14 @@ public class SneakerService {
                 .must(brandQuery);
 
 
+        Sort sort = Sort.by(Sort.Direction.DESC, "score");
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withIndices("sneaker")
-                .withPageable(new Pageable() {
-                    @Override
-                    public int getPageNumber() {
-                        return 0;
-                    }
-
-                    @Override
-                    public int getPageSize() {
-                        return 300;
-                    }
-
-                    @Override
-                    public long getOffset() {
-                        return 0;
-                    }
-
-                    @Override
-                    public Sort getSort() {
-                        return null;
-                    }
-
-                    @Override
-                    public Pageable next() {
-                        return null;
-                    }
-
-                    @Override
-                    public Pageable previousOrFirst() {
-                        return null;
-                    }
-
-                    @Override
-                    public Pageable first() {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean hasPrevious() {
-                        return false;
-                    }
-                })
+                .withPageable(PageableImpl.builder().pageSize(300).pageNumber(0).offset(0).sort(sort).build())
                 .build();
 
-        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class).subList(0, 4);
+        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class).stream().limit(4).collect(toList());
     }
 
 }

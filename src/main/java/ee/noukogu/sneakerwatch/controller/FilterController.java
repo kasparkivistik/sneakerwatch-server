@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 @RestController
 public class FilterController {
 
-
     @Resource
     private FilterService filterService;
 
