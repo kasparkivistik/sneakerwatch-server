@@ -1,6 +1,7 @@
 package ee.noukogu.sneakerwatch.controller;
 
 import ee.noukogu.sneakerwatch.model.Sneaker;
+import ee.noukogu.sneakerwatch.model.SneakerSearchQuery;
 import ee.noukogu.sneakerwatch.service.SneakerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,4 +37,9 @@ public class SneakerClientController {
         return new ResponseEntity<>(sneakerService.getBrands(), HttpStatus.OK);
     }
 
+    @PostMapping("sneaker/search")
+    public @ResponseBody
+    ResponseEntity<?> searchSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery) {
+        return new ResponseEntity<>(sneakerService.searchWithQuery(sneakerSearchQuery), HttpStatus.OK);
+    }
 }

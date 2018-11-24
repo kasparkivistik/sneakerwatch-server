@@ -1,8 +1,10 @@
 package ee.noukogu.sneakerwatch.service;
 
+import ee.noukogu.sneakerwatch.model.Budget;
 import ee.noukogu.sneakerwatch.model.Sneaker;
 import ee.noukogu.sneakerwatch.model.SneakerSearchQuery;
 import ee.noukogu.sneakerwatch.repository.SneakerRepository;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -16,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
 public class SneakerService {
@@ -42,7 +45,6 @@ public class SneakerService {
     }
 
     public Set<String> getBrands() {
-//        List<String> brands = new ArrayList<>();
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(matchAllQuery())
                 .withSourceFilter(new FetchSourceFilter(new String[]{"brand"}, new String[]{}))
@@ -52,6 +54,14 @@ public class SneakerService {
     }
 
     public List<Sneaker> searchWithQuery(SneakerSearchQuery sneakerSearchQuery) {
-       return new ArrayList<>();
+
+        Budget budget = sneakerSearchQuery.getBudget();
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+//                .withQuery(matchAllQuery())
+                .withFilter(rangeQuery("price")
+                        .gte(budget.getStart())
+                        .lte(budget.getEnd()))
+                .build();
+        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
     }
 }
