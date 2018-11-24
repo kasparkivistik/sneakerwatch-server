@@ -12,12 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,12 +50,8 @@ public class SneakerService {
     }
 
     public Set<String> getBrands() {
-//        List<String> brands = new ArrayList<>();
-        SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withFields("brand")
-//                .withSourceFilter(new FetchSourceFilter(new String[]{"sneaker"}, new String[]{}))
-                .build();
-        List<Sneaker> sneakers = elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
+        List<Sneaker> sneakers = new ArrayList<>();
+        repository.findAll().forEach(sneakers::add);
         return sneakers.stream().map(Sneaker::getBrand).collect(Collectors.toSet());
     }
 
