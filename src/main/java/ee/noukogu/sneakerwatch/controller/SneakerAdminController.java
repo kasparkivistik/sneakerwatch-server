@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin/sneakers")
 public class SneakerAdminController {
 
     @Resource
     SneakerService sneakerService;
 
-    @PostMapping("/sneaker/add")
+    @PostMapping("/add")
     public ResponseEntity<?> add(@RequestBody Sneaker sneaker) {
         if (sneaker != null) {
             return new ResponseEntity<>(sneakerService.add(sneaker), HttpStatus.OK);
@@ -32,7 +32,7 @@ public class SneakerAdminController {
         }
     }
 
-    @PostMapping("sneaker/getFromJson")
+    @PostMapping("/getFromJson")
     public ResponseEntity<?> populateDatabase(MultipartFile file) throws IOException {
         InputStream fileContent = file.getInputStream();
         BufferedReader in = new BufferedReader(new InputStreamReader(fileContent));
@@ -46,7 +46,7 @@ public class SneakerAdminController {
         return new ResponseEntity<>("Shoes added successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("/sneaker/deleteAll")
+    @DeleteMapping("/deleteAll")
     public @ResponseBody
     ResponseEntity<?> deleteAll() {
         sneakerService.deleteAll();

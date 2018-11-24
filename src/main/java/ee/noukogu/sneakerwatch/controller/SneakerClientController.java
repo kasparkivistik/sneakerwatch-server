@@ -12,25 +12,25 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/api/client/sneakers")
 public class SneakerClientController {
 
     @Resource
     SneakerService sneakerService;
 
-    @GetMapping("/sneaker/getAll")
+    @GetMapping
     public @ResponseBody
     Page<Sneaker> getAll(Pageable pageable) {
         return sneakerService.getAll(pageable);
     }
 
-    @PostMapping("sneaker/choose")
+    @PostMapping("/choose")
     public @ResponseBody
     ResponseEntity<?> chooseSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery) {
         return new ResponseEntity<>(sneakerService.chooseWithQuery(sneakerSearchQuery), HttpStatus.OK);
     }
 
-    @GetMapping("sneaker/search")
+    @GetMapping("/search")
     public @ResponseBody
     ResponseEntity<?> searchSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery, Pageable pageable) {
         return new ResponseEntity<>(sneakerService.searchWithQuery(sneakerSearchQuery, pageable), HttpStatus.OK);
