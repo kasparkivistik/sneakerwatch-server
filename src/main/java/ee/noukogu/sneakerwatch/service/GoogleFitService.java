@@ -10,7 +10,7 @@ import java.util.Random;
 @Service
 public class GoogleFitService {
 
-    private List<String> sports = Arrays.asList("Running", "Tennis", "Skate", "Training", "Basketball", "football", "Hiking");
+    private List<String> sports = Arrays.asList("Running", "Tennis", "Skate", "Training", "Basketball", "Football", "Hiking");
 
     public GoogleFitData getGoogleFitData() {
         GoogleFitData googleFitData = new GoogleFitData();
