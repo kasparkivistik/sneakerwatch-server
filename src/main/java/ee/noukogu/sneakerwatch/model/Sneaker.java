@@ -30,7 +30,7 @@ public class Sneaker {
     @JsonProperty("collection")
     public String collection;
     @JsonProperty("price")
-    public String price;
+    public Integer price;
     @JsonProperty("description")
     public String description;
     @JsonProperty("brand")
