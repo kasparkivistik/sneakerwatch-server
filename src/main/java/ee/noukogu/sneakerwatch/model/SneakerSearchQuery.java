@@ -1,5 +1,8 @@
 package ee.noukogu.sneakerwatch.model;
 
+import ee.noukogu.enums.Gender;
+import ee.noukogu.enums.Purpose;
+import ee.noukogu.enums.Top;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -8,9 +11,10 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @NoArgsConstructor
 @Document(indexName = "searchQuery")
 public class SneakerSearchQuery {
-    private String sex;
-    private String inspired;
+
+    private Gender gender;
+    private Purpose inspired;
     private String sport;
-    private String top;
+    private Top top;
     private Budget budget;
 }
