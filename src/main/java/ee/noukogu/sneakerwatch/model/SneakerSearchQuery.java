@@ -18,7 +18,7 @@ public class SneakerSearchQuery {
 //    private Gender gender;
 //    private Purpose inspired;
     private String sport;
-//    private Top top;
+    private Top top;
     private Budget budget;
-//    private List<Brand> brands;
+    private List<Brand> brands;
 }

@@ -6,6 +6,8 @@ import ee.noukogu.sneakerwatch.model.Sneaker;
 import ee.noukogu.sneakerwatch.model.SneakerSearchParams;
 import ee.noukogu.sneakerwatch.model.SneakerSearchQuery;
 import ee.noukogu.sneakerwatch.repository.SneakerRepository;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
 public class SneakerService {
@@ -51,8 +52,8 @@ public class SneakerService {
     public Set<String> getBrands() {
 //        List<String> brands = new ArrayList<>();
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchAllQuery())
-                .withSourceFilter(new FetchSourceFilter(new String[]{"brand"}, new String[]{}))
+                .withFields("brand")
+//                .withSourceFilter(new FetchSourceFilter(new String[]{"sneaker"}, new String[]{}))
                 .build();
         List<Sneaker> sneakers = elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
         return sneakers.stream().map(Sneaker::getBrand).collect(Collectors.toSet());
@@ -61,12 +62,23 @@ public class SneakerService {
     public List<Sneaker> searchWithQuery(SneakerSearchQuery sneakerSearchQuery) {
 
         Budget budget = sneakerSearchQuery.getBudget();
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+
+        MatchQueryBuilder inspiredQuery = matchQuery("inspired", sneakerSearchQuery.getSport());
+        MatchQueryBuilder topQuery = matchQuery("top", sneakerSearchQuery.getTop().getValue());
+        boolQueryBuilder.must(rangeQuery("price")
+                .gte(budget.getStart())
+                .lte(budget.getEnd()))
+                .must(inspiredQuery)
+                .must(topQuery);
+
+
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
 //                .withQuery(matchAllQuery())
-                .withFilter(rangeQuery("price")
-                        .gte(budget.getStart())
-                        .lte(budget.getEnd()))
+                .withQuery(boolQueryBuilder)
+                .withIndices("sneaker")
                 .build();
+
         return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
     }
 
