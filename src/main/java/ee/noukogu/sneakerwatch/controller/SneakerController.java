@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/api/client/sneakers")
-public class SneakerClientController {
+@RequestMapping("/api/sneakers")
+public class SneakerController {
 
     @Resource
     SneakerService sneakerService;
