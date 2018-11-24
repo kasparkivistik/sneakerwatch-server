@@ -24,9 +24,15 @@ public class SneakerClientController {
         return sneakerService.getAll(pageable);
     }
 
-    @PostMapping("sneaker/search")
+    @PostMapping("sneaker/choose")
     public @ResponseBody
-    ResponseEntity<?> searchSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery) {
-        return new ResponseEntity<>(sneakerService.searchWithQuery(sneakerSearchQuery), HttpStatus.OK);
+    ResponseEntity<?> chooseSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery) {
+        return new ResponseEntity<>(sneakerService.chooseWithQuery(sneakerSearchQuery), HttpStatus.OK);
+    }
+
+    @GetMapping("sneaker/search")
+    public @ResponseBody
+    ResponseEntity<?> searchSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery, Pageable pageable) {
+        return new ResponseEntity<>(sneakerService.searchWithQuery(sneakerSearchQuery, pageable), HttpStatus.OK);
     }
 }

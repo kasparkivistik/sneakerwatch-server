@@ -51,8 +51,34 @@ public class SneakerService {
         repository.deleteAll();
     }
 
-    public List<Sneaker> searchWithQuery(SneakerSearchQuery sneakerSearchQuery) {
+    public List<Sneaker> chooseWithQuery(SneakerSearchQuery sneakerSearchQuery) {
 
+        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "score");
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withIndices("sneaker")
+                .withPageable(PageableImpl.builder().pageSize(300).pageNumber(0).offset(0).sort(sort).build())
+                .build();
+
+        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class).stream().limit(4).collect(toList());
+    }
+
+    public List<Sneaker> searchWithQuery(SneakerSearchQuery sneakerSearchQuery, Pageable pageable) {
+
+        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withIndices("sneaker")
+                .withPageable(pageable)
+                .build();
+
+        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
+    }
+
+
+    private BoolQueryBuilder getBoolQueryBuilder(SneakerSearchQuery sneakerSearchQuery) {
         Budget budget = sneakerSearchQuery.getBudget();
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
@@ -71,16 +97,7 @@ public class SneakerService {
                 .must(inspiredQuery)
                 .must(topQuery)
                 .must(brandQuery);
-
-
-        Sort sort = Sort.by(Sort.Direction.DESC, "score");
-        SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(boolQueryBuilder)
-                .withIndices("sneaker")
-                .withPageable(PageableImpl.builder().pageSize(300).pageNumber(0).offset(0).sort(sort).build())
-                .build();
-
-        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class).stream().limit(4).collect(toList());
+        return boolQueryBuilder;
     }
 
 }
