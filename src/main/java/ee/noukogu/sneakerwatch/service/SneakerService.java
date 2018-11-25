@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -60,16 +61,24 @@ public class SneakerService {
         //TODO: save with user pointer
         sneakerSearchQueryRepository.save(sneakerSearchQuery);
 
-        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
-        Sort sort = Sort.by(Sort.Direction.DESC, "score");
-        PageableImpl pageable = PageableImpl.builder().pageSize(300).pageNumber(0).offset(0).sort(sort).build();
-        SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(boolQueryBuilder)
-                .withIndices("sneaker")
-                .withPageable(pageable)
-                .build();
-        List<Sneaker> sneakers = elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
-        sneakers = sneakers.size() < 4 ? getAll(pageable).getContent() : sneakers;
+        List<Sneaker> sneakers = getAllWithQuery(sneakerSearchQuery);
+//        sneakers = sneakers.size() < 4 ? getAll(pageable).getContent() : sneakers;
+        if (sneakers.size() < 4) {
+
+            SneakerSearchQuery otherSneakers = new SneakerSearchQuery();
+            otherSneakers.setInspired(sneakerSearchQuery.getInspired());
+            otherSneakers.setTop(sneakerSearchQuery.getTop());
+            otherSneakers.setBudget(sneakerSearchQuery.getBudget());
+            otherSneakers.setSport(sneakerSearchQuery.getSport());
+
+            ArrayList<Sneaker> randomOtherSneakers = new ArrayList<>(getAllWithQuery(otherSneakers));
+            Collections.shuffle(randomOtherSneakers);
+
+            ArrayList<Sneaker> mutable = new ArrayList<>(sneakers);
+            mutable.addAll(randomOtherSneakers);
+
+            sneakers = mutable;
+        }
         return sneakers.stream().limit(4).collect(toList());
     }
 
@@ -115,5 +124,20 @@ public class SneakerService {
 
     public Sneaker getByName(String name) {
         return repository.findByName(name);
+    }
+
+    public List<Sneaker> getAllWithQuery(SneakerSearchQuery sneakerSearchQuery) {
+
+        //TODO: save with user pointer
+
+        BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
+        Sort sort = Sort.by(Sort.Direction.DESC, "score");
+        PageableImpl pageable = PageableImpl.builder().pageSize(1500).pageNumber(0).offset(0).sort(sort).build();
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withIndices("sneaker")
+                .withPageable(pageable)
+                .build();
+        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
     }
 }
