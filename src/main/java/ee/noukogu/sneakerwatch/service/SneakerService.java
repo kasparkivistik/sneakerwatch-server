@@ -62,12 +62,15 @@ public class SneakerService {
 
         BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
         Sort sort = Sort.by(Sort.Direction.DESC, "score");
+        PageableImpl pageable = PageableImpl.builder().pageSize(300).pageNumber(0).offset(0).sort(sort).build();
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withIndices("sneaker")
-                .withPageable(PageableImpl.builder().pageSize(300).pageNumber(0).offset(0).sort(sort).build())
+                .withPageable(pageable)
                 .build();
-        return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class).stream().limit(4).collect(toList());
+        List<Sneaker> sneakers = elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
+        sneakers = sneakers.size() < 4 ? getAll(pageable).getContent() : sneakers;
+        return sneakers.stream().limit(4).collect(toList());
     }
 
     public List<Sneaker> searchWithQuery(SneakerSearchQuery sneakerSearchQuery) {
