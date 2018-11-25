@@ -80,7 +80,7 @@ public class SneakerService {
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withIndices("sneaker")
-                .withPageable(PageableImpl.builder().pageSize(20).pageNumber(0).offset(0).sort(sort).build())
+                .withPageable(PageableImpl.builder().pageSize(7).pageNumber(0).offset(0).sort(sort).build())
                 .build();
 
         return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
