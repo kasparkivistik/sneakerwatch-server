@@ -24,7 +24,7 @@ public class SneakerController {
     public @ResponseBody
     Page<Sneaker> getAll() {
         Sort sort = Sort.by(Sort.Direction.DESC, "score");
-        PageableImpl pageable = PageableImpl.builder().pageSize(7).pageNumber(0).offset(0).sort(sort).build();
+        PageableImpl pageable = PageableImpl.builder().pageSize(9).pageNumber(0).offset(0).sort(sort).build();
         return sneakerService.getAll(pageable);
     }
 

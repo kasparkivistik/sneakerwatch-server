@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,12 @@ public class FilterService {
     public Set<String> getInspirations() {
         List<Sneaker> sneakers = new ArrayList<>();
         repository.findAll().forEach(sneakers::add);
-        return sneakers.stream().map(Sneaker::getBrand).collect(Collectors.toSet());
+        return sneakers.stream()
+                .map(Sneaker::getInspired)
+                .filter(Objects::nonNull)
+                .filter(s -> !s.toLowerCase().equals("casual"))
+                .filter(s -> !s.toLowerCase().equals("sport"))
+                .collect(Collectors.toSet());
     }
 
 }
