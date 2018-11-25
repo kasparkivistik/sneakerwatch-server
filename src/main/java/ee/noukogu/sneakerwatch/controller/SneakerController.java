@@ -1,10 +1,11 @@
 package ee.noukogu.sneakerwatch.controller;
 
+import ee.noukogu.sneakerwatch.model.PageableImpl;
 import ee.noukogu.sneakerwatch.model.Sneaker;
 import ee.noukogu.sneakerwatch.model.SneakerSearchQuery;
 import ee.noukogu.sneakerwatch.service.SneakerService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,9 @@ public class SneakerController {
 
     @GetMapping
     public @ResponseBody
-    Page<Sneaker> getAll(Pageable pageable) {
+    Page<Sneaker> getAll() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "score");
+        PageableImpl pageable = PageableImpl.builder().pageSize(7).pageNumber(0).offset(0).sort(sort).build();
         return sneakerService.getAll(pageable);
     }
 
