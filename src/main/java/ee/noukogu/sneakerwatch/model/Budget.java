@@ -11,7 +11,7 @@ public class Budget {
 
     public Budget() {
         this.start = ThreadLocalRandom.current().nextInt(60, 100 + 1);
-        this.end = ThreadLocalRandom.current().nextInt(start, 150 + 1);
+        this.end = ThreadLocalRandom.current().nextInt(start+30, 300 + 1);
     }
 
     public boolean allows(int price) {
