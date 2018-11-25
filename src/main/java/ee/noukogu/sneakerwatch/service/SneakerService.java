@@ -10,6 +10,7 @@ import ee.noukogu.sneakerwatch.repository.SneakerSearchQueryRepository;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -69,13 +70,14 @@ public class SneakerService {
         return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class).stream().limit(4).collect(toList());
     }
 
-    public List<Sneaker> searchWithQuery(SneakerSearchQuery sneakerSearchQuery, Pageable pageable) {
+    public List<Sneaker> searchWithQuery(SneakerSearchQuery sneakerSearchQuery) {
 
         BoolQueryBuilder boolQueryBuilder = getBoolQueryBuilder(sneakerSearchQuery);
+        Sort sort = Sort.by(Sort.Direction.DESC, "score");
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withIndices("sneaker")
-                .withPageable(pageable)
+                .withPageable(PageableImpl.builder().pageSize(20).pageNumber(0).offset(0).sort(sort).build())
                 .build();
 
         return elasticsearchTemplate.queryForList(searchQuery, Sneaker.class);
@@ -86,9 +88,9 @@ public class SneakerService {
         Budget budget = sneakerSearchQuery.getBudget();
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-        String inspired = sneakerSearchQuery.getInspired().equals(Purpose.CASUAL) ? "Casual" : sneakerSearchQuery.getSport();
-        MatchQueryBuilder inspiredQuery = matchQuery("inspired", inspired);
-        MatchQueryBuilder topQuery = matchQuery("top", sneakerSearchQuery.getTop().getValue());
+        String inspired = sneakerSearchQuery.getInspired() == null ? null : sneakerSearchQuery.getInspired().equals(Purpose.CASUAL) ? "Casual" : sneakerSearchQuery.getSport();
+        QueryBuilder inspiredQuery = inspired == null ? matchAllQuery() : matchQuery("inspired", inspired);
+        QueryBuilder topQuery = sneakerSearchQuery.getTop() == null ? matchAllQuery() : matchQuery("top", sneakerSearchQuery.getTop().getValue());
         List<String> brands = sneakerSearchQuery.getBrands();
         if (brands == null || brands.isEmpty()) {
             brands = new ArrayList<>(filterService.getBrands());

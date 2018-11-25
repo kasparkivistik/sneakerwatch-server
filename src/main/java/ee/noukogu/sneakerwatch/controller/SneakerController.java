@@ -31,10 +31,10 @@ public class SneakerController {
         return new ResponseEntity<>(sneakerService.chooseWithQuery(sneakerSearchQuery), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public @ResponseBody
-    ResponseEntity<?> searchSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery, Pageable pageable) {
-        return new ResponseEntity<>(sneakerService.searchWithQuery(sneakerSearchQuery, pageable), HttpStatus.OK);
+    ResponseEntity<?> searchSneakers(@RequestBody SneakerSearchQuery sneakerSearchQuery) {
+        return new ResponseEntity<>(sneakerService.searchWithQuery(sneakerSearchQuery), HttpStatus.OK);
     }
 
     @GetMapping("getByName/{name}")
